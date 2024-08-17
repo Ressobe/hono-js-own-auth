@@ -8,7 +8,7 @@ import {
   h2,
   input,
   labelClass,
-} from "./style";
+} from "../styles/index";
 
 export function LoginForm() {
   return (
@@ -16,7 +16,7 @@ export function LoginForm() {
       <h1 class={h1}>Sign in to your account</h1>
       <h2 class={h2}>Sign in and see what is new!</h2>
 
-      <form class={formClass}>
+      <form method="post" class={formClass}>
         <fieldset class={fieldsetClass}>
           <label class={labelClass}>Email: </label>
           <input

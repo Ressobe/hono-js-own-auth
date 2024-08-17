@@ -8,7 +8,7 @@ import {
   h2,
   input,
   labelClass,
-} from "./style";
+} from "../styles/index";
 
 export function RegisterForm() {
   return (
@@ -16,7 +16,7 @@ export function RegisterForm() {
       <h1 class={h1}>Create an account</h1>
       <h2 class={h2}>Sign up now and unlock exclusive access!</h2>
 
-      <form class={formClass}>
+      <form method="post" class={formClass}>
         <fieldset class={fieldsetClass}>
           <label class={labelClass}>Your name: </label>
           <input
