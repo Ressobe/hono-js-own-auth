@@ -1,7 +1,7 @@
 {
   "name": "own-auth",
   "scripts": {
-    "dev": "bun run --hot src/index.ts",
+    "dev": "bun run --hot src/index.tsx",
     "db:push": "drizzle-kit push --config=drizzle.config.ts",
     "migrate": "drizzle-kit generate",
     "studio": "drizzle-kit studio"
@@ -17,4 +17,3 @@
     "drizzle-kit": "^0.24.0"
   }
 }
-
