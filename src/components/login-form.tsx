@@ -1,6 +1,7 @@
 import {
   a,
   button,
+  errorClass,
   fieldsetClass,
   formClass,
   formSection,
@@ -8,9 +9,14 @@ import {
   h2,
   input,
   labelClass,
-} from "../styles/index";
+} from "../styles";
+import { LoginErrors } from "../types";
 
-export function LoginForm() {
+type LoginFormProps = {
+  errors?: LoginErrors;
+};
+
+export function LoginForm({ errors }: LoginFormProps) {
   return (
     <section class={formSection}>
       <h1 class={h1}>Sign in to your account</h1>
@@ -25,6 +31,7 @@ export function LoginForm() {
             name="email"
             placeholder="you@email.com"
           />
+          <span class={errorClass}>{errors?.email?._errors.toString()}</span>
         </fieldset>
 
         <fieldset class={fieldsetClass}>
@@ -35,6 +42,7 @@ export function LoginForm() {
             name="password"
             placeholder="********"
           />
+          <span class={errorClass}>{errors?.password?._errors.toString()}</span>
         </fieldset>
 
         <button class={button} type="submit">

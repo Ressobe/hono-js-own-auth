@@ -1,6 +1,7 @@
 import {
   a,
   button,
+  errorClass,
   fieldsetClass,
   formClass,
   formSection,
@@ -8,9 +9,14 @@ import {
   h2,
   input,
   labelClass,
-} from "../styles/index";
+} from "../styles";
+import { RegisterErrors } from "../types";
 
-export function RegisterForm() {
+type RegisterFormProps = {
+  errors?: RegisterErrors;
+};
+
+export function RegisterForm({ errors }: RegisterFormProps) {
   return (
     <section class={formSection}>
       <h1 class={h1}>Create an account</h1>
@@ -25,6 +31,7 @@ export function RegisterForm() {
             name="name"
             placeholder="First Last"
           />
+          <span class={errorClass}>{errors?.name?._errors.toString()}</span>
         </fieldset>
 
         <fieldset class={fieldsetClass}>
@@ -35,6 +42,7 @@ export function RegisterForm() {
             name="email"
             placeholder="you@email.com"
           />
+          <span class={errorClass}>{errors?.email?._errors.toString()}</span>
         </fieldset>
 
         <fieldset class={fieldsetClass}>
@@ -45,6 +53,7 @@ export function RegisterForm() {
             name="password"
             placeholder="********"
           />
+          <span class={errorClass}>{errors?.password?._errors.toString()}</span>
         </fieldset>
 
         <fieldset class={fieldsetClass}>
@@ -55,6 +64,9 @@ export function RegisterForm() {
             name="confirm-password"
             placeholder="********"
           />
+          <span class={errorClass}>
+            {errors?.confirmPassword?._errors.toString()}
+          </span>
         </fieldset>
         <button class={button} type="submit">
           Create Accoount

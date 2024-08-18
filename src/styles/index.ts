@@ -147,3 +147,7 @@ export const input = css`
   border-color: rgba(128, 128, 128, 0.5);
   border-radius: 0.5rem;
 `;
+
+export const errorClass = css`
+  color: red;
+`;
