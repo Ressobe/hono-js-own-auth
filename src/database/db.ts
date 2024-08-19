@@ -3,7 +3,7 @@ import { Client } from "pg";
 import * as schema from "./schema";
 
 const client = new Client({
-  connectionString: "postgres://myuser:mypassword@localhost:5432/mydatabase",
+  connectionString: "postgres://myuser:mypassword@localhost:5433/mydatabase",
 });
 
 await client.connect();

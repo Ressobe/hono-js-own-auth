@@ -10,13 +10,9 @@ import {
   input,
   labelClass,
 } from "../styles";
-import { RegisterErrors } from "../types";
+import { RegisterProps } from "../types";
 
-type RegisterFormProps = {
-  errors?: RegisterErrors;
-};
-
-export function RegisterForm({ errors }: RegisterFormProps) {
+export function RegisterForm({ zodErrors, values }: RegisterProps) {
   return (
     <section class={formSection}>
       <h1 class={h1}>Create an account</h1>
@@ -30,8 +26,9 @@ export function RegisterForm({ errors }: RegisterFormProps) {
             type="text"
             name="name"
             placeholder="First Last"
+            value={values?.name ?? ""}
           />
-          <span class={errorClass}>{errors?.name?._errors.toString()}</span>
+          <span class={errorClass}>{zodErrors?.name?._errors.toString()}</span>
         </fieldset>
 
         <fieldset class={fieldsetClass}>
@@ -41,8 +38,9 @@ export function RegisterForm({ errors }: RegisterFormProps) {
             type="email"
             name="email"
             placeholder="you@email.com"
+            value={values?.email ?? ""}
           />
-          <span class={errorClass}>{errors?.email?._errors.toString()}</span>
+          <span class={errorClass}>{zodErrors?.email?._errors.toString()}</span>
         </fieldset>
 
         <fieldset class={fieldsetClass}>
@@ -53,7 +51,9 @@ export function RegisterForm({ errors }: RegisterFormProps) {
             name="password"
             placeholder="********"
           />
-          <span class={errorClass}>{errors?.password?._errors.toString()}</span>
+          <span class={errorClass}>
+            {zodErrors?.password?._errors.toString()}
+          </span>
         </fieldset>
 
         <fieldset class={fieldsetClass}>
@@ -61,11 +61,11 @@ export function RegisterForm({ errors }: RegisterFormProps) {
           <input
             class={input}
             type="password"
-            name="confirm-password"
+            name="confirmPassword"
             placeholder="********"
           />
           <span class={errorClass}>
-            {errors?.confirmPassword?._errors.toString()}
+            {zodErrors?.confirmPassword?._errors.toString()}
           </span>
         </fieldset>
         <button class={button} type="submit">

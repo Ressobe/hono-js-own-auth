@@ -151,3 +151,7 @@ export const input = css`
 export const errorClass = css`
   color: red;
 `;
+
+export const sucessClass = css`
+  color: green;
+`;

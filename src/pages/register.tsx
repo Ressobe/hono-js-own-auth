@@ -1,15 +1,11 @@
 import { Layout } from "../components/layout";
 import { RegisterForm } from "../components/register-form";
-import { RegisterErrors } from "../types";
+import { RegisterProps } from "../types";
 
-type RegisterPageProps = {
-  errors?: RegisterErrors;
-};
-
-export function RegisterPage({ errors }: RegisterPageProps) {
+export function RegisterPage(props: RegisterProps) {
   return (
     <Layout>
-      <RegisterForm errors={errors} />
+      <RegisterForm {...props} />
     </Layout>
   );
 }

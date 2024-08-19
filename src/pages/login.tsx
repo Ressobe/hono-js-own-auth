@@ -1,15 +1,11 @@
 import { Layout } from "../components/layout";
 import { LoginForm } from "../components/login-form";
-import { LoginErrors } from "../types";
+import { LoginProps } from "../types";
 
-type LoginPageProps = {
-  errors?: LoginErrors;
-};
-
-export function LoginPage({ errors }: LoginPageProps) {
+export function LoginPage(props: LoginProps) {
   return (
     <Layout>
-      <LoginForm errors={errors} />
+      <LoginForm {...props} />
     </Layout>
   );
 }
