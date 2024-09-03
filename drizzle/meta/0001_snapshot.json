@@ -1,11 +1,27 @@
 {
-  "id": "32dc7817-8525-42a4-8afb-cab6cfe03c59",
-  "prevId": "2b506d5c-d9dd-4985-8fce-8894163e208d",
+  "id": "9d948d89-bba9-48dc-8ad3-1e6578102c69",
+  "prevId": "37f85446-7b9e-4e77-9e61-d2ab02700d9e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.user": {
-      "name": "user",
+    "public.refreshTokens": {
+      "name": "refreshTokens",
+      "schema": "",
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.users": {
+      "name": "users",
       "schema": "",
       "columns": {
         "id": {
@@ -37,7 +53,7 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
-          "default": "'2024-08-13 16:59:38.984'"
+          "default": "'2024-09-03 17:11:11.413'"
         }
       },
       "indexes": {},

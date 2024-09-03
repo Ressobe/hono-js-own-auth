@@ -1,15 +1,21 @@
+import "dotenv/config";
+import bcrypt from "bcryptjs";
 import { Hono } from "hono";
 import { validator } from "hono/validator";
 import { LoginSchema, RegisterSchema } from "./schemas";
 import { LoginPage } from "./pages/login";
 import { RegisterPage } from "./pages/register";
 import { createUser, getUserByEmail } from "./database/user";
-import bcrypt from "bcryptjs";
+import { HomePage } from "./pages/home";
+import { generateAccessToken, generateRefreshToken } from "./auth/jwt";
+import { getCookie, setCookie } from "hono/cookie";
+import * as jwt from "jsonwebtoken";
+import { getToken } from "./database/refreshToken";
 
 const app = new Hono();
 
 app.get("/", async (c) => {
-  return c.html("home");
+  return c.html(<HomePage />);
 });
 
 app.get("/login", async (c) => {
@@ -18,6 +24,46 @@ app.get("/login", async (c) => {
 
 app.get("/register", async (c) => {
   return c.html(<RegisterPage />);
+});
+
+app.use("/protected", async (c, next) => {
+  const accessToken = getCookie(c, "accessToken");
+  const refreshToken = getCookie(c, "accessToken");
+
+  if (!accessToken) {
+    return c.redirect("/");
+  }
+  if (!refreshToken) {
+    return c.redirect("/");
+  }
+
+  try {
+    const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!);
+    if (typeof payload === "string") {
+      return c.redirect("/");
+    }
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      const existingToken = await getToken(refreshToken);
+      if (!existingToken) {
+        return c.redirect("/");
+      }
+
+      const newAccessToken = generateAccessToken(payload.userId);
+      const newRefreshToken = generateRefreshToken(payload.userId);
+
+      setCookie(c, "accessToken", newAccessToken, { httpOnly: true });
+      setCookie(c, "refreshToken", newRefreshToken, { httpOnly: true });
+
+      return c.redirect("/");
+    }
+  }
+
+  await next();
+});
+
+app.get("/protected", async (c) => {
+  return c.html("You are log in!");
 });
 
 app.post(
@@ -59,7 +105,13 @@ app.post(
       );
     }
 
-    return c.redirect("/login");
+    const accessToken = generateAccessToken(existingUser.id);
+    const refreshToken = generateRefreshToken(existingUser.id);
+
+    setCookie(c, "accessToken", accessToken, { httpOnly: true });
+    setCookie(c, "refreshToken", refreshToken, { httpOnly: true });
+
+    return c.redirect("/protected");
   },
 );
 

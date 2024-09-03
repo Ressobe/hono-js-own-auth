@@ -9,3 +9,7 @@ export const users = pgTable("users", {
   password: text("password"),
   createdAt: timestamp("created_at").default(new Date()),
 });
+
+export const refreshTokens = pgTable("refreshTokens", {
+  token: text("token").primaryKey(),
+});

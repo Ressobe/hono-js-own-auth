@@ -155,3 +155,10 @@ export const errorClass = css`
 export const sucessClass = css`
   color: green;
 `;
+
+export const homeButtonClass = css`
+  border: none;
+  display: block;
+  background-color: red;
+  color: blue;
+`;
