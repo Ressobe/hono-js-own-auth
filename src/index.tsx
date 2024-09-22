@@ -10,7 +10,7 @@ import { HomePage } from "./pages/home";
 import { generateAccessToken, generateRefreshToken } from "./auth/jwt";
 import { getCookie, setCookie } from "hono/cookie";
 import * as jwt from "jsonwebtoken";
-import { getToken } from "./database/refreshToken";
+import { getToken, insertToken } from "./database/refreshToken";
 
 const app = new Hono();
 
@@ -28,24 +28,32 @@ app.get("/register", async (c) => {
 
 app.use("/protected", async (c, next) => {
   const accessToken = getCookie(c, "accessToken");
-  const refreshToken = getCookie(c, "accessToken");
+  const refreshToken = getCookie(c, "refreshToken");
 
-  if (!accessToken) {
+  if (!accessToken || !refreshToken) {
     return c.redirect("/");
   }
-  if (!refreshToken) {
-    return c.redirect("/");
-  }
+
+  let payload: jwt.JwtPayload | null = null;
 
   try {
-    const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!);
-    if (typeof payload === "string") {
-      return c.redirect("/");
-    }
+    payload = jwt.verify(
+      accessToken,
+      process.env.ACCESS_TOKEN_SECRET!,
+    ) as jwt.JwtPayload;
   } catch (err) {
-    if (err instanceof jwt.TokenExpiredError) {
+    if (err instanceof jwt.TokenExpiredError && refreshToken) {
       const existingToken = await getToken(refreshToken);
       if (!existingToken) {
+        return c.redirect("/");
+      }
+
+      try {
+        payload = jwt.verify(
+          refreshToken,
+          process.env.REFRESH_TOKEN_SECRET!,
+        ) as jwt.JwtPayload;
+      } catch (refreshErr) {
         return c.redirect("/");
       }
 
@@ -55,6 +63,8 @@ app.use("/protected", async (c, next) => {
       setCookie(c, "accessToken", newAccessToken, { httpOnly: true });
       setCookie(c, "refreshToken", newRefreshToken, { httpOnly: true });
 
+      return c.redirect("/protected");
+    } else {
       return c.redirect("/");
     }
   }
@@ -63,7 +73,7 @@ app.use("/protected", async (c, next) => {
 });
 
 app.get("/protected", async (c) => {
-  return c.html("You are log in!");
+  return c.html("You are logged in!");
 });
 
 app.post(
@@ -95,7 +105,6 @@ app.post(
       password,
       existingUser.password,
     );
-
     if (!isPasswordsMatch) {
       return c.html(
         <LoginPage
@@ -107,6 +116,7 @@ app.post(
 
     const accessToken = generateAccessToken(existingUser.id);
     const refreshToken = generateRefreshToken(existingUser.id);
+    await insertToken(refreshToken);
 
     setCookie(c, "accessToken", accessToken, { httpOnly: true });
     setCookie(c, "refreshToken", refreshToken, { httpOnly: true });
